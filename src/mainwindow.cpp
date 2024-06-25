@@ -12,22 +12,7 @@ MainWindow::MainWindow(QWidget *parent)
   ui->stackedWidget->setCurrentIndex(1);
   state = State::Unauthorized;
 
-  QFile file(DATA_FILE_PATH);
-  if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
-    QMessageBox::warning(this, "Ошибка", "Не удалось открыть файл");
-    return;
-  }
-
-  QTextStream in(&file);
-  trxs.clear();
-  while (!in.atEnd()) {
-    QString line = in.readLine();
-    if (!line.isEmpty()) {
-      trxs.append(Trx(line));
-    }
-  }
-  file.close();
-  displayTrxs();
+  loadFile();
 
   connect(ui->loadButton, &QPushButton::clicked, this, &MainWindow::loadFile);
 }
@@ -36,10 +21,16 @@ MainWindow::~MainWindow() { delete ui; }
 
 // Function to load transactions from a file
 void MainWindow::loadFile() {
-  QString fileName = QFileDialog::getOpenFileName(
-      this, "Открыть файл транзакций", "", "Text Files (*.txt)");
-  if (fileName.isEmpty()) {
-    return;
+  QString fileName;
+  if (!firstOpen) {
+    fileName = QFileDialog::getOpenFileName(this, "Открыть файл транзакций", "",
+                                            "Text Files (*.txt)");
+    if (fileName.isEmpty()) {
+      return;
+    }
+  } else {
+    fileName = DATA_FILE_PATH;
+    firstOpen = false;
   }
 
   QFile file(fileName);
@@ -66,6 +57,8 @@ void MainWindow::displayTrxs() {
   ui->trxTable->setColumnCount(4);
   ui->trxTable->setHorizontalHeaderLabels(
       {"Сумма", "Номер кошелька", "Дата", "Хеш"});
+
+  bool is_valid = true;
   for (int i = 0; i < trxs.length(); i++) {
     Trx trx = trxs[i];
 
@@ -79,6 +72,9 @@ void MainWindow::displayTrxs() {
 
     if ((i > 0 && !trx.compareHash(trxs[i - 1].hash.toUtf8())) ||
         (i == 0 && !trx.compareHash(""))) {
+      is_valid = false;
+    }
+    if (!is_valid) {
       ui->trxTable->item(i, 3)->setBackground(Qt::red);
     }
   }
