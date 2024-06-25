@@ -3,7 +3,7 @@
 Trx::Trx() : sum(""), walletNumber(""), date(""), hash("") {}
 
 Trx::Trx(const QString &text) {
-  QStringList fields = text.split('\n');
+  QStringList fields = text.split(' ');
   if (fields.size() == 4) {
     sum = fields[0];
     walletNumber = fields[1];
