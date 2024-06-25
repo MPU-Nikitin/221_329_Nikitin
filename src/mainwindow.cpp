@@ -57,6 +57,8 @@ void MainWindow::displayTrxs() {
   ui->trxTable->setColumnCount(4);
   ui->trxTable->setHorizontalHeaderLabels(
       {"Сумма", "Номер кошелька", "Дата", "Хеш"});
+
+  bool is_valid = true;
   for (int i = 0; i < trxs.length(); i++) {
     Trx trx = trxs[i];
 
@@ -70,6 +72,9 @@ void MainWindow::displayTrxs() {
 
     if ((i > 0 && !trx.compareHash(trxs[i - 1].hash.toUtf8())) ||
         (i == 0 && !trx.compareHash(""))) {
+      is_valid = false;
+    }
+    if (!is_valid) {
       ui->trxTable->item(i, 3)->setBackground(Qt::red);
     }
   }
