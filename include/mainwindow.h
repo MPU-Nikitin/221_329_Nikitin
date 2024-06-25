@@ -15,6 +15,8 @@
 
 #include <trx.h>
 
+const QString DATA_FILE_PATH = "records.txt";
+
 namespace Ui {
 class MainWindow;
 }

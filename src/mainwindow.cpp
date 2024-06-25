@@ -12,6 +12,23 @@ MainWindow::MainWindow(QWidget *parent)
   ui->stackedWidget->setCurrentIndex(1);
   state = State::Unauthorized;
 
+  QFile file(DATA_FILE_PATH);
+  if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+    QMessageBox::warning(this, "Ошибка", "Не удалось открыть файл");
+    return;
+  }
+
+  QTextStream in(&file);
+  trxs.clear();
+  while (!in.atEnd()) {
+    QString line = in.readLine();
+    if (!line.isEmpty()) {
+      trxs.append(Trx(line));
+    }
+  }
+  file.close();
+  displayTrxs();
+
   connect(ui->loadButton, &QPushButton::clicked, this, &MainWindow::loadFile);
 }
 
