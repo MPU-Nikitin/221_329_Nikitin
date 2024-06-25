@@ -34,12 +34,13 @@ private slots:
 
 private:
   int getHash(QByteArray &hash);
+  void loadFile();
 
   void displayTrxs();
   void router();
 
   Ui::MainWindow *ui;
-  QVector<QString> trxs;
+  QVector<Trx> trxs;
   State state;
 };
 
