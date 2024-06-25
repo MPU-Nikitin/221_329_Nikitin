@@ -59,6 +59,11 @@ void MainWindow::displayTrxs() {
     ui->trxTable->setItem(row, 1, new QTableWidgetItem(trx.walletNumber));
     ui->trxTable->setItem(row, 2, new QTableWidgetItem(trx.date));
     ui->trxTable->setItem(row, 3, new QTableWidgetItem(trx.hash));
+
+    if ((i > 0 && !trx.compareHash(trxs[i - 1].hash.toUtf8())) ||
+        (i == 0 && !trx.compareHash(""))) {
+      ui->trxTable->item(i, 3)->setBackground(Qt::red);
+    }
   }
 }
 

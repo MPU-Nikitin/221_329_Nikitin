@@ -17,6 +17,15 @@ Trx::Trx(const QString &text) {
   }
 }
 
-QString Trx::toText() const {
-  return sum + "\n" + walletNumber + "\n" + date + "\n" + hash;
+QString Trx::toText() const { return sum + walletNumber + date; }
+
+bool Trx::compareHash(QByteArray prevHash) {
+  QByteArray computedHash = QCryptographicHash::hash(
+      this->toText().toUtf8(), QCryptographicHash::Sha256);
+  prevHash = computedHash.toHex();
+  qDebug() << hash + " || " + computedHash.toHex();
+
+  if (computedHash.toHex() != hash)
+    return false;
+  return true;
 }
