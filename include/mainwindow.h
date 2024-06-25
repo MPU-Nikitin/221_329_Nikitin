@@ -42,6 +42,7 @@ private:
   Ui::MainWindow *ui;
   QVector<Trx> trxs;
   State state;
+  bool firstOpen = true;
 };
 
 #endif // MAINWINDOW_H
